@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\TaxTypeController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -94,4 +95,11 @@ Route::middleware('auth')->group(function () {
         '/transactions/{transaction}',
         [TransactionController::class, 'update']
     )->name('transactions.update');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
 });
