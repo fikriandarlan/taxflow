@@ -417,3 +417,27 @@ body.taxflow-app > main {
 .taxflow-btn-back:active {
     transform: translateY(0);
 }
+
+/* TaxFlow — Navbar User Identity */
+
+.taxflow-user-separator {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 1.15rem;
+    font-weight: 400;
+}
+
+.taxflow-user-name {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .taxflow-user-name {
+        font-size: 0.85rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}

@@ -133,6 +133,7 @@
                                 <th scope="col">Nominal Pajak</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Status</th>
+                                <th scope="col" class="text-center">Aksi</th>
                             </tr>
                         </thead>
 
@@ -205,7 +206,6 @@
 
                                     <!-- Status -->
                                     <td>
-
                                         @if ($transaction->status === 'draft')
 
                                             <span class="taxflow-status inactive">
@@ -239,9 +239,19 @@
                                             </span>
 
                                         @endif
-
                                     </td>
 
+                                    <td class="text-center">
+                                        @if ($transaction->status === 'draft')
+                                            <a
+                                                href="{{ route('transactions.edit', $transaction) }}"
+                                                class="btn btn-sm btn-outline-primary rounded-3 px-3">
+                                                Edit
+                                            </a>
+                                        @else
+                                            <span class="text-muted small">—</span>
+                                        @endif
+                                    </td>
                                 </tr>
 
                             @empty
@@ -249,7 +259,7 @@
                                 <!-- Empty state -->
                                 <tr>
 
-                                    <td colspan="10"
+                                    <td colspan="11"
                                         class="text-center py-5">
 
                                         <h3 class="h6 fw-bold text-secondary">

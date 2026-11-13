@@ -1,23 +1,15 @@
 <nav class="navbar navbar-expand-lg taxflow-navbar">
     <div class="container-xl">
 
+        <!-- Identitas Aplikasi dan Pengguna -->
         <div class="d-flex align-items-center gap-3">
 
-            <!-- Brand TaxFlow -->
             <a class="navbar-brand taxflow-brand"
                href="{{ route('merchants.index') }}">
-                <span class="taxflow-brand-mark">T</span>
-                <span>TaxFlow</span>
+                TaxFlow
             </a>
 
-            <!-- Nama pengguna di samping logo -->
             <div class="taxflow-user">
-                <span class="taxflow-user-avatar">
-                    {{ strtoupper(
-                        substr(auth()->user()->name, 0, 1)
-                    ) }}
-                </span>
-
                 <span class="taxflow-user-name">
                     {{ auth()->user()->name }}
                 </span>
@@ -25,7 +17,7 @@
 
         </div>
 
-        <!-- Toggle navigasi mobile -->
+        <!-- Navigasi Mobile -->
         <button
             class="navbar-toggler taxflow-toggler"
             type="button"
@@ -38,11 +30,13 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Navigasi Utama -->
         <div class="collapse navbar-collapse"
              id="taxflowNavbar">
 
             <div class="navbar-nav ms-auto
-                        align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
+                        align-items-lg-center
+                        gap-lg-2 mt-3 mt-lg-0">
 
                 <a
                     href="{{ route('merchants.index') }}"
@@ -76,13 +70,14 @@
 
                 <div class="taxflow-nav-divider"></div>
 
-                <!-- Logout tetap memakai POST + CSRF -->
+                <!-- Logout -->
                 <form method="POST"
                       action="{{ route('logout') }}">
                     @csrf
 
-                    <button type="submit"
-                            class="btn taxflow-logout">
+                    <button
+                        type="submit"
+                        class="btn taxflow-logout">
                         Logout
                     </button>
                 </form>
