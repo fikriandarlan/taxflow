@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1">
 
@@ -12,102 +14,72 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+
+    <!-- TaxFlow Custom CSS -->
+    <link
+        href="{{ asset('css/taxflow.css') }}"
+        rel="stylesheet"
+    >
 </head>
 
-<body class="bg-light">
+<body class="taxflow-app">
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-primary">
-        <div class="container">
-
-            <a href="{{ route('transactions.index') }}"
-               class="navbar-brand fw-bold">
-                TaxFlow
-            </a>
-
-            <div class="d-flex flex-wrap
-                        align-items-center gap-3">
-
-                <!-- Navigasi Merchant -->
-                <a href="{{ route('merchants.index') }}"
-                   class="text-white text-decoration-none small">
-                    Merchant
-                </a>
-
-                <!-- Navigasi Jenis Pajak -->
-                <a href="{{ route('tax-types.index') }}"
-                   class="text-white text-decoration-none small">
-                    Jenis Pajak
-                </a>
-
-                <!-- Navigasi Transaksi -->
-                <a href="{{ route('transactions.index') }}"
-                   class="text-white text-decoration-none small fw-bold"
-                   aria-current="page">
-                    Transaksi
-                </a>
-
-                <!-- Pengguna -->
-                <span class="text-white-50 small">
-                    {{ auth()->user()->name }}
-                </span>
-
-                <!-- Logout -->
-                <form method="POST"
-                      action="{{ route('logout') }}">
-                    @csrf
-
-                    <button type="submit"
-                            class="btn btn-outline-light btn-sm">
-                        Logout
-                    </button>
-                </form>
-
-            </div>
-        </div>
-    </nav>
+    <!-- Navbar Bersama -->
+    @include('partials.navbar')
 
     <!-- Konten Utama -->
-    <main class="container py-5">
+    <main class="container-xl taxflow-page">
 
         <!-- Header Halaman -->
         <div class="d-flex flex-wrap
                     justify-content-between
-                    align-items-center gap-3 mb-4">
+                    align-items-center
+                    gap-3 mb-4">
 
             <div>
-                <h2 class="fw-bold mb-1">
-                    Daftar Transaksi
-                </h2>
 
-                <p class="text-muted mb-0">
+                <h1 class="h2 taxflow-page-title mb-2">
+                    Daftar Transaksi
+                </h1>
+
+                <p class="taxflow-page-subtitle mb-0">
                     Pantau transaksi simulasi
                     pada sistem TaxFlow.
                 </p>
+
             </div>
 
-            <!-- Akan diaktifkan pada sesi Create -->
+            <!-- Tambah Transaksi -->
             <a href="{{ route('transactions.create') }}"
-            class="btn btn-primary">
-                + Tambah Transaksi
+               class="btn taxflow-btn-primary">
+
+                <span class="me-1">+</span>
+                Tambah Transaksi
+
             </a>
 
         </div>
 
-        <!-- Informasi -->
-        <div class="alert alert-info" role="note">
+        <!-- Informasi Simulasi -->
+        <div class="alert alert-info
+                    border-0 rounded-4 mb-4"
+             role="note">
+
             <strong>Informasi:</strong>
             Modul ini digunakan untuk simulasi
             pengelolaan transaksi dan perhitungan pajak.
-            Data transaksi belum menggunakan
-            pembayaran atau pelaporan pajak resmi.
+            Data transaksi belum menggunakan pembayaran
+            atau pelaporan pajak resmi.
+
         </div>
 
-        <!-- Notifikasi untuk sesi berikutnya -->
+        <!-- Notifikasi Berhasil -->
         @if (session('success'))
-            <div
-                class="alert alert-success alert-dismissible fade show"
-                role="alert">
+
+            <div class="alert alert-success
+                        alert-dismissible fade show
+                        rounded-4 mb-4"
+                 role="alert">
 
                 {{ session('success') }}
 
@@ -116,38 +88,115 @@
                         data-bs-dismiss="alert"
                         aria-label="Tutup notifikasi">
                 </button>
+
             </div>
+
         @endif
 
-        <!-- Daftar Transaksi -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
+        <!-- Card Data Transaksi -->
+        <div class="card taxflow-card border-0">
 
+            <div class="card-body p-4">
+
+                <!-- Header Card -->
                 <div class="d-flex flex-wrap
                             justify-content-between
-                            align-items-center gap-2 mb-3">
+                            align-items-center
+                            gap-3 mb-4">
 
-                    <h5 class="mb-0">
-                        Data Transaksi
-                    </h5>
+                    <div class="d-flex
+                                align-items-center
+                                gap-3">
 
-                    <span class="badge bg-primary">
+                        <!-- Identitas Modul -->
+                        <div
+                            class="d-flex align-items-center
+                                   justify-content-center
+                                   rounded-3"
+                            style="
+                                width: 44px;
+                                height: 44px;
+                                background: #e8f2ff;
+                                color: #075be8;
+                                font-size: 1.3rem;
+                                font-weight: 800;
+                            ">
+
+                            T
+
+                        </div>
+
+                        <div>
+
+                            <h2 class="h5 taxflow-card-title mb-1">
+                                Data Transaksi
+                            </h2>
+
+                            <p class="text-muted small mb-0">
+                                Daftar transaksi yang tercatat
+                                di database TaxFlow.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Total Data -->
+                    <span class="taxflow-total">
                         Total: {{ $transactions->total() }}
                     </span>
 
                 </div>
 
+                <!-- Tabel Transaksi -->
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
 
-                        <thead class="table-light">
+                    <table class="table table-hover
+                                  align-middle taxflow-table">
+
+                        <thead>
                             <tr>
-                                <th scope="col">No.</th>
-                                <th scope="col">ID Transaksi</th>
-                                <th scope="col">Kode Merchant</th>
-                                <th scope="col">Nama Merchant</th>
-                                <th scope="col">Kode Jenis Pajak</th>
-                                <th scope="col">Nama Jenis Pajak</th>
+
+                                <th scope="col">
+                                    No.
+                                </th>
+
+                                <th scope="col">
+                                    Kode Transaksi
+                                </th>
+
+                                <th scope="col">
+                                    Tanggal
+                                </th>
+
+                                <th scope="col">
+                                    Merchant
+                                </th>
+
+                                <th scope="col">
+                                    Jenis Pajak
+                                </th>
+
+                                <th scope="col">
+                                    Nominal Dasar
+                                </th>
+
+                                <th scope="col">
+                                    Tarif
+                                </th>
+
+                                <th scope="col">
+                                    Nominal Pajak
+                                </th>
+
+                                <th scope="col">
+                                    Total
+                                </th>
+
+                                <th scope="col">
+                                    Status
+                                </th>
+
                             </tr>
                         </thead>
 
@@ -162,27 +211,99 @@
                                         {{ $transactions->firstItem() + $loop->index }}
                                     </td>
 
-                                    <!-- ID Transaksi -->
+                                    <!-- Kode Transaksi -->
                                     <td>
-                                        {{ $transaction->id }}
+                                        <span class="fw-bold text-primary">
+                                            {{ $transaction->transaction_code }}
+                                        </span>
+                                    </td>
+
+                                    <!-- Tanggal -->
+                                    <td class="text-nowrap">
+                                        {{ $transaction->transaction_date?->format('d/m/Y H:i') ?? '-' }}
                                     </td>
 
                                     <!-- Merchant -->
                                     <td>
-                                        {{ $transaction->merchant?->merchant_code ?? '-' }}
-                                    </td>
 
-                                    <td class="fw-semibold">
-                                        {{ $transaction->merchant?->name ?? '-' }}
+                                        <div class="fw-semibold">
+                                            {{ $transaction->merchant?->name ?? '-' }}
+                                        </div>
+
+                                        <div class="text-muted small">
+                                            {{ $transaction->merchant?->merchant_code ?? '-' }}
+                                        </div>
+
                                     </td>
 
                                     <!-- Jenis Pajak -->
                                     <td>
-                                        {{ $transaction->taxType?->tax_code ?? '-' }}
+
+                                        <div class="fw-semibold">
+                                            {{ $transaction->taxType?->name ?? '-' }}
+                                        </div>
+
+                                        <div class="text-muted small">
+                                            {{ $transaction->taxType?->tax_code ?? '-' }}
+                                        </div>
+
                                     </td>
 
+                                    <!-- Nominal Dasar -->
+                                    <td class="text-nowrap">
+                                        Rp {{ $transaction->base_amount }}
+                                    </td>
+
+                                    <!-- Tarif Snapshot -->
+                                    <td class="text-nowrap">
+                                        {{ $transaction->tax_rate_percent }}%
+                                    </td>
+
+                                    <!-- Nominal Pajak -->
+                                    <td class="text-nowrap">
+                                        Rp {{ $transaction->tax_amount }}
+                                    </td>
+
+                                    <!-- Total Transaksi -->
+                                    <td class="text-nowrap fw-bold">
+                                        Rp {{ $transaction->total_amount }}
+                                    </td>
+
+                                    <!-- Status -->
                                     <td>
-                                        {{ $transaction->taxType?->name ?? '-' }}
+
+                                        @if ($transaction->status === 'draft')
+
+                                            <span class="taxflow-status inactive">
+                                                Draft
+                                            </span>
+
+                                        @elseif ($transaction->status === 'completed')
+
+                                            <span class="taxflow-status active">
+                                                Selesai
+                                            </span>
+
+                                        @elseif ($transaction->status === 'cancelled')
+
+                                            <span class="badge
+                                                         bg-danger-subtle
+                                                         text-danger-emphasis
+                                                         rounded-pill px-3 py-2">
+                                                Dibatalkan
+                                            </span>
+
+                                        @else
+
+                                            <span class="badge
+                                                         bg-secondary-subtle
+                                                         text-secondary-emphasis
+                                                         rounded-pill px-3 py-2">
+                                                {{ $transaction->status }}
+                                            </span>
+
+                                        @endif
+
                                     </td>
 
                                 </tr>
@@ -191,20 +312,34 @@
 
                                 <!-- Belum Ada Transaksi -->
                                 <tr>
-                                    <td colspan="6"
+
+                                    <td colspan="10"
                                         class="text-center py-5">
 
-                                        <h6 class="text-muted mb-2">
-                                            Belum ada transaksi.
-                                        </h6>
+                                        <div class="mb-3"
+                                             style="font-size: 2rem;">
+                                            📋
+                                        </div>
 
-                                        <p class="small text-muted mb-0">
-                                            Transaksi akan ditampilkan
-                                            setelah fitur Create
-                                            diimplementasikan.
+                                        <h3 class="h6 fw-bold text-secondary">
+                                            Belum ada transaksi
+                                        </h3>
+
+                                        <p class="text-muted small mb-3">
+                                            Tambahkan transaksi pertama
+                                            untuk mulai mengelola data.
                                         </p>
 
+                                        <a
+                                            href="{{ route('transactions.create') }}"
+                                            class="btn taxflow-btn-primary btn-sm">
+
+                                            + Tambah Transaksi
+
+                                        </a>
+
                                     </td>
+
                                 </tr>
 
                             @endforelse
@@ -212,24 +347,26 @@
                         </tbody>
 
                     </table>
+
                 </div>
 
                 <!-- Pagination -->
                 @if ($transactions->hasPages())
-                    <div class="mt-3">
+
+                    <div class="mt-4">
                         {{ $transactions->links('pagination::bootstrap-5') }}
                     </div>
+
                 @endif
 
             </div>
+
         </div>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="text-center text-muted py-4 small">
-        TaxFlow — Sistem Manajemen Transaksi Pajak
-    </footer>
+    <!-- Footer Bersama -->
+    @include('partials.footer')
 
     <!-- Bootstrap JavaScript -->
     <script
