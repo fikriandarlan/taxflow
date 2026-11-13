@@ -353,13 +353,6 @@ body.taxflow-app > main {
     letter-spacing: -0.6px;
 }
 
-.taxflow-user {
-    background: rgba(255, 255, 255, 0.12);
-    border-left: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 8px;
-    padding: 9px 14px;
-}
-
 .taxflow-user-name {
     font-size: 0.88rem;
     font-weight: 600;
@@ -369,7 +362,6 @@ body.taxflow-app > main {
 .taxflow-card-title {
     font-weight: 750;
 }
-
 
 /* ======================================
    TAXFLOW — BACK BUTTON
@@ -436,6 +428,74 @@ body.taxflow-app > main {
 
 @media (max-width: 575.98px) {
     .taxflow-user-name {
+        font-size: 0.85rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* ==========================================
+   TAXFLOW — NAVBAR IDENTITY FINAL
+   ========================================== */
+
+.taxflow-navbar .taxflow-brand {
+    display: inline-flex;
+    align-items: center;
+
+    margin: 0;
+    padding: 0;
+
+    color: #ffffff !important;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+}
+
+.taxflow-navbar .taxflow-user-separator {
+    display: inline-block;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    font-weight: 400;
+
+    padding: 0;
+    margin: 0 2px;
+}
+
+.taxflow-navbar .taxflow-user-name {
+    display: inline-block;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.4;
+
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 575.98px) {
+    .taxflow-navbar .taxflow-brand {
+        font-size: 1.15rem;
+    }
+
+    .taxflow-navbar .taxflow-user-separator {
+        font-size: 0.95rem;
+    }
+
+    .taxflow-navbar .taxflow-user-name {
         font-size: 0.85rem;
         white-space: normal;
         overflow-wrap: anywhere;

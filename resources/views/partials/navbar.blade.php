@@ -2,18 +2,25 @@
     <div class="container-xl">
 
         <!-- Identitas Aplikasi dan Pengguna -->
-        <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center flex-wrap gap-2">
 
-            <a class="navbar-brand taxflow-brand"
+            <!-- Nama Aplikasi -->
+            <a class="navbar-brand taxflow-brand mb-0 me-0"
                href="{{ route('merchants.index') }}">
                 TaxFlow
             </a>
 
-            <div class="taxflow-user">
+            <!-- Pemisah dan Nama Pengguna -->
+            @auth
+                <span class="taxflow-user-separator"
+                      aria-hidden="true">
+                    |
+                </span>
+
                 <span class="taxflow-user-name">
                     {{ auth()->user()->name }}
                 </span>
-            </div>
+            @endauth
 
         </div>
 
@@ -38,6 +45,7 @@
                         align-items-lg-center
                         gap-lg-2 mt-3 mt-lg-0">
 
+                <!-- Merchant -->
                 <a
                     href="{{ route('merchants.index') }}"
                     class="nav-link taxflow-nav-link
@@ -48,6 +56,7 @@
                     Merchant
                 </a>
 
+                <!-- Jenis Pajak -->
                 <a
                     href="{{ route('tax-types.index') }}"
                     class="nav-link taxflow-nav-link
@@ -58,6 +67,7 @@
                     Jenis Pajak
                 </a>
 
+                <!-- Transaksi -->
                 <a
                     href="{{ route('transactions.index') }}"
                     class="nav-link taxflow-nav-link
@@ -84,5 +94,6 @@
 
             </div>
         </div>
+
     </div>
 </nav>
