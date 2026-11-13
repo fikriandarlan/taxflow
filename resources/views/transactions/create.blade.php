@@ -272,41 +272,55 @@
                             </div>
 
                         </div>
-
+                        
                         <!-- Nominal Dasar -->
                         <div class="col-md-6">
 
-                            <label for="base_amount"
-                                   class="form-label fw-semibold">
+                            <label for="base_amount_display"
+                                class="form-label fw-semibold">
                                 Nominal Dasar (Rp)
                                 <span class="text-danger">*</span>
                             </label>
 
-                            <input
-                                type="number"
-                                name="base_amount"
-                                id="base_amount"
-                                min="0"
-                                max="9999999999999999.99"
-                                step="0.01"
-                                value="{{ old('base_amount') }}"
-                                placeholder="Contoh: 150.00"
-                                class="form-control rounded-3
-                                       @error('base_amount')
-                                           is-invalid
-                                       @enderror"
-                                required
-                            >
+                            <div class="input-group">
+                                <span class="input-group-text
+                                            bg-light fw-semibold">
+                                    Rp
+                                </span>
 
-                            @error('base_amount')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
+                                <!-- Input yang dilihat pengguna -->
+                                <input
+                                    type="text"
+                                    id="base_amount_display"
+                                    class="form-control rounded-end-3
+                                        @error('base_amount') is-invalid @enderror"
+                                    placeholder="150.000,00"
+                                    inputmode="decimal"
+                                    autocomplete="off"
+                                    aria-describedby="base_amount_help"
+                                    required
+                                >
 
-                            <div class="form-text">
-                                Gunakan titik sebagai desimal.
-                                Maksimal dua angka di belakang titik.
+                                <!-- Nilai standar untuk Laravel -->
+                                <input
+                                    type="hidden"
+                                    id="base_amount"
+                                    name="base_amount"
+                                    value="{{ old('base_amount') }}"
+                                >
+
+                                @error('base_amount')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div id="base_amount_help"
+                                class="form-text">
+                                Gunakan format Rupiah Indonesia,
+                                misalnya 150.000,00.
+                                Maksimal dua angka desimal.
                             </div>
 
                         </div>
@@ -438,6 +452,156 @@
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
     </script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const display = document.getElementById(
+        'base_amount_display'
+    );
+
+    const hidden = document.getElementById(
+        'base_amount'
+    );
+
+    const form = display.closest('form');
+
+    if (!display || !hidden || !form) {
+        return;
+    }
+
+    function groupThousands(digits) {
+        return digits.replace(
+            /\B(?=(\d{3})+(?!\d))/g,
+            '.'
+        );
+    }
+
+    function normalizeAmount(value) {
+        const input = value.trim();
+
+        // Terima angka tanpa pemisah ribuan atau
+        // angka dengan pemisah ribuan Indonesia.
+        const validFormat =
+            /^(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d{0,2})?$/;
+
+        if (!validFormat.test(input)) {
+            return null;
+        }
+
+        const parts = input.split(',');
+        const integerDigits = parts[0].replace(/\./g, '');
+
+        // NUMERIC(18,2): maksimum 16 digit integer.
+        const integerPart =
+            integerDigits.replace(/^0+(?=\d)/, '');
+
+        if (integerPart.length > 16) {
+            return null;
+        }
+
+        const decimalPart =
+            (parts[1] || '').padEnd(2, '0');
+
+        const canonical =
+            integerPart + '.' + decimalPart;
+
+        return {
+            canonical: canonical,
+            formatted:
+                groupThousands(integerPart) +
+                ',' + decimalPart
+        };
+    }
+
+    function syncAmount(finalize) {
+        const rawValue = display.value.trim();
+
+        if (rawValue === '') {
+            hidden.value = '';
+            display.setCustomValidity('');
+            return;
+        }
+
+        const result = normalizeAmount(rawValue);
+
+        if (result === null) {
+            hidden.value = '';
+
+            display.setCustomValidity(
+                'Gunakan format Rupiah seperti 150.000,00 ' +
+                'dengan maksimal 16 digit angka utama ' +
+                'dan 2 angka desimal.'
+            );
+
+            return;
+        }
+
+        hidden.value = result.canonical;
+        display.setCustomValidity('');
+
+        if (finalize) {
+            display.value = result.formatted;
+            return;
+        }
+
+        // Format ribuan saat mengetik.
+        // Jangan menambahkan ,00 sampai input selesai.
+        const parts = rawValue.split(',');
+
+        const integerDigits =
+            parts[0].replace(/\./g, '');
+
+        const grouped = groupThousands(
+            integerDigits.replace(/^0+(?=\d)/, '')
+        );
+
+        display.value = parts.length > 1
+            ? grouped + ',' + parts[1]
+            : grouped;
+    }
+
+    // Format otomatis saat mengetik.
+    display.addEventListener('input', function () {
+        syncAmount(false);
+    });
+
+    // Lengkapi dua angka desimal saat fokus keluar.
+    display.addEventListener('blur', function () {
+        syncAmount(true);
+    });
+
+    // Pastikan nilai backend valid sebelum submit.
+    form.addEventListener('submit', function (event) {
+        syncAmount(true);
+
+        if (!display.checkValidity() || hidden.value === '') {
+            event.preventDefault();
+            display.reportValidity();
+        }
+    });
+
+    // Kembalikan input lama setelah validasi gagal.
+    // old('base_amount') memakai format standar Laravel.
+    const previousAmount = @json(old('base_amount', ''));
+
+    if (
+        previousAmount !== '' &&
+        /^\d+(?:\.\d{1,2})?$/.test(previousAmount)
+    ) {
+        const parts = previousAmount.split('.');
+
+        const integerPart = parts[0];
+        const decimalPart = (parts[1] || '').padEnd(2, '0');
+
+        display.value =
+            groupThousands(integerPart) +
+            ',' + decimalPart;
+
+        syncAmount(true);
+    }
+});
+</script>
 
 </body>
 </html>
