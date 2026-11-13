@@ -1,106 +1,136 @@
-
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1">
 
     <title>Edit Jenis Pajak — TaxFlow</title>
 
+    <!-- Bootstrap CSS -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+
+    <!-- TaxFlow Custom CSS -->
+    <link
+        href="{{ asset('css/taxflow.css') }}"
+        rel="stylesheet"
+    >
 </head>
 
-<body class="bg-light">
+<body class="taxflow-app">
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-primary">
-        <div class="container">
+    <!-- Navbar Bersama -->
+    @include('partials.navbar')
 
-            <a href="{{ route('tax-types.index') }}"
-               class="navbar-brand fw-bold">
-                TaxFlow
-            </a>
+    <!-- Konten Utama -->
+    <main class="container-xl taxflow-page">
 
-            <div class="d-flex flex-wrap align-items-center gap-3">
-
-                <a href="{{ route('merchants.index') }}"
-                   class="text-white text-decoration-none small">
-                    Merchant
-                </a>
-
-                <a href="{{ route('tax-types.index') }}"
-                   class="text-white text-decoration-none small fw-bold">
-                    Jenis Pajak
-                </a>
-
-                <span class="text-white-50 small">
-                    {{ auth()->user()->name }}
-                </span>
-
-                <form method="POST"
-                      action="{{ route('logout') }}">
-                    @csrf
-
-                    <button type="submit"
-                            class="btn btn-outline-light btn-sm">
-                        Logout
-                    </button>
-                </form>
-
-            </div>
-        </div>
-    </nav>
-
-    <!-- Konten -->
-    <main class="container py-5">
-
+        <!-- Tombol Kembali -->
         <div class="mb-4">
 
             <a href="{{ route('tax-types.index') }}"
-               class="text-decoration-none">
-                &larr; Kembali ke Daftar Jenis Pajak
+               class="taxflow-btn-back">
+
+                Kembali ke Daftar Jenis Pajak
+
             </a>
 
-            <h2 class="fw-bold mt-3 mb-1">
-                Edit Jenis Pajak
-            </h2>
+        </div>
 
-            <p class="text-muted mb-0">
+        <!-- Header -->
+        <div class="mb-4">
+
+            <h1 class="h2 taxflow-page-title mb-2">
+                Edit Jenis Pajak
+            </h1>
+
+            <p class="taxflow-page-subtitle mb-0">
                 Perbarui informasi jenis dan tarif
-                pajak simulasi.
+                pajak simulasi yang sudah terdaftar.
             </p>
 
         </div>
 
-        <div class="alert alert-info" role="note">
+        <!-- Informasi Simulasi -->
+        <div class="alert alert-info
+                    border-0 rounded-4 mb-4"
+             role="note">
+
             <strong>Informasi:</strong>
-            Tarif yang digunakan merupakan simulasi
-            pembelajaran TaxFlow, bukan tarif pajak resmi.
+            Perubahan tarif hanya memengaruhi
+            transaksi baru. Transaksi lama
+            tetap menyimpan tarif saat dibuat.
+
         </div>
 
-        <!-- Form Edit -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-4">
+        <!-- Pesan Validasi -->
+        @if ($errors->any())
 
+            <div class="alert alert-danger
+                        rounded-4 mb-4"
+                 role="alert">
+
+                <strong>
+                    Perubahan belum dapat disimpan.
+                </strong>
+
+                <p class="mb-0 mt-1">
+                    Periksa kembali kolom yang ditandai.
+                </p>
+
+            </div>
+
+        @endif
+
+        <!-- Card Form -->
+        <div class="card taxflow-card border-0">
+
+            <div class="card-body p-4 p-lg-5">
+
+                <!-- Header Card -->
+                <div class="mb-4">
+
+                    <h2 class="h5 taxflow-card-title mb-2">
+                        Informasi Jenis Pajak
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+
+                        Kode Pajak:
+                        <strong>
+                            {{ $taxType->tax_code }}
+                        </strong>
+
+                    </p>
+
+                </div>
+
+                <hr class="mb-4">
+
+                <!-- Form Edit -->
                 <form
                     method="POST"
-                    action="{{ route('tax-types.update', $taxType) }}">
+                    action="{{ route('tax-types.update', $taxType->id) }}">
 
                     @csrf
                     @method('PUT')
 
-                    <div class="row g-3">
+                    <div class="row g-4">
 
                         <!-- Kode Pajak -->
                         <div class="col-md-6">
 
                             <label for="tax_code"
-                                   class="form-label">
-                                Kode Pajak *
+                                   class="form-label fw-semibold">
+
+                                Kode Pajak
+                                <span class="text-danger">*</span>
+
                             </label>
 
                             <input
@@ -109,7 +139,8 @@
                                 name="tax_code"
                                 maxlength="30"
                                 value="{{ old('tax_code', $taxType->tax_code) }}"
-                                class="form-control @error('tax_code') is-invalid @enderror"
+                                class="form-control rounded-3
+                                    @error('tax_code') is-invalid @enderror"
                                 required
                             >
 
@@ -125,8 +156,11 @@
                         <div class="col-md-6">
 
                             <label for="name"
-                                   class="form-label">
-                                Nama Jenis Pajak *
+                                   class="form-label fw-semibold">
+
+                                Nama Jenis Pajak
+                                <span class="text-danger">*</span>
+
                             </label>
 
                             <input
@@ -135,7 +169,8 @@
                                 name="name"
                                 maxlength="100"
                                 value="{{ old('name', $taxType->name) }}"
-                                class="form-control @error('name') is-invalid @enderror"
+                                class="form-control rounded-3
+                                    @error('name') is-invalid @enderror"
                                 required
                             >
 
@@ -151,11 +186,14 @@
                         <div class="col-md-6">
 
                             <label for="rate_percent"
-                                   class="form-label">
-                                Tarif Pajak (%) *
+                                   class="form-label fw-semibold">
+
+                                Tarif Pajak (%)
+                                <span class="text-danger">*</span>
+
                             </label>
 
-                            <div class="input-group has-validation">
+                            <div class="input-group">
 
                                 <input
                                     type="number"
@@ -165,7 +203,8 @@
                                     max="100"
                                     step="0.01"
                                     value="{{ old('rate_percent', $taxType->rate_percent) }}"
-                                    class="form-control @error('rate_percent') is-invalid @enderror"
+                                    class="form-control
+                                        @error('rate_percent') is-invalid @enderror"
                                     required
                                 >
 
@@ -182,53 +221,62 @@
                             </div>
 
                             <div class="form-text">
-                                Tarif 0 sampai 100,
+                                Rentang 0–100 persen,
                                 maksimal dua angka desimal.
-                                Gunakan titik sebagai
-                                pemisah desimal.
                             </div>
 
                         </div>
 
-                        <!-- Status -->
+                        <!-- Status Pajak -->
                         <div class="col-md-6">
 
-                            <label for="is_active"
-                                   class="form-label">
-                                Status *
+                            <label class="form-label fw-semibold">
+                                Status Jenis Pajak
                             </label>
 
-                            <select
-                                id="is_active"
+                            <input
+                                type="hidden"
                                 name="is_active"
-                                class="form-select @error('is_active') is-invalid @enderror"
-                                required
+                                value="0"
                             >
 
-                                <option value="1"
-                                    @selected(
-                                        (string) old(
-                                            'is_active',
-                                            (int) $taxType->is_active
-                                        ) === '1'
-                                    )>
-                                    Aktif
-                                </option>
+                            <div
+                                class="form-check form-switch
+                                       rounded-3 border p-3"
+                                style="padding-left: 3.5rem !important;">
 
-                                <option value="0"
-                                    @selected(
-                                        (string) old(
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    role="switch"
+                                    id="is_active"
+                                    name="is_active"
+                                    value="1"
+                                    @checked(
+                                        (bool) old(
                                             'is_active',
-                                            (int) $taxType->is_active
-                                        ) === '0'
-                                    )>
-                                    Tidak Aktif
-                                </option>
+                                            $taxType->is_active
+                                        )
+                                    )
+                                >
 
-                            </select>
+                                <label
+                                    class="form-check-label fw-semibold"
+                                    for="is_active">
+
+                                    Jenis Pajak Aktif
+
+                                </label>
+
+                                <div class="form-text">
+                                    Jenis pajak nonaktif tidak dapat
+                                    dipilih untuk transaksi baru.
+                                </div>
+
+                            </div>
 
                             @error('is_active')
-                                <div class="invalid-feedback">
+                                <div class="text-danger small mt-1">
                                     {{ $message }}
                                 </div>
                             @enderror
@@ -239,17 +287,25 @@
 
                     <hr class="my-4">
 
-                    <div class="d-flex justify-content-end gap-2">
+                    <!-- Tombol Aksi -->
+                    <div class="d-flex flex-wrap
+                                justify-content-end gap-2">
 
-                        <a href="{{ route('tax-types.index') }}"
-                           class="btn btn-outline-secondary">
+                        <a
+                            href="{{ route('tax-types.index') }}"
+                            class="btn btn-outline-secondary
+                                   rounded-3 px-4">
+
                             Batal
+
                         </a>
 
                         <button
                             type="submit"
-                            class="btn btn-primary">
+                            class="btn taxflow-btn-primary">
+
                             Simpan Perubahan
+
                         </button>
 
                     </div>
@@ -261,10 +317,10 @@
 
     </main>
 
-    <footer class="text-center text-muted py-4 small">
-        TaxFlow — Sistem Manajemen Transaksi Pajak
-    </footer>
+    <!-- Footer Bersama -->
+    @include('partials.footer')
 
+    <!-- Bootstrap JavaScript -->
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
     </script>

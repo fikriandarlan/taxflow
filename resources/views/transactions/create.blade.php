@@ -28,10 +28,9 @@
 
     <main class="container-xl taxflow-page">
 
-        <!-- Navigasi kembali -->
         <div class="mb-4">
             <a href="{{ route('transactions.index') }}"
-               class="text-decoration-none fw-semibold">
+            class="taxflow-btn-back">
                 Kembali ke Daftar Transaksi
             </a>
         </div>
