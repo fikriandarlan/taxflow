@@ -23,6 +23,10 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Local testing environment
+# Environment and local backups
+.env.before-taxflow-app.bak
 .env.testing
 .env.testing.*
+
+# Temporary local validation scripts
+/test-inactive-tax-type.php
