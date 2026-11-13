@@ -28,11 +28,11 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            // Regenerasi sesi setelah autentikasi berhasil.
             $request->session()->regenerate();
 
-            return redirect()->intended(
-                route('merchants.index')
-            );
+            // Selalu arahkan pengguna ke Dashboard.
+            return redirect()->route('dashboard');
         }
 
         return back()
