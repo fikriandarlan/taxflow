@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport"
           content="width=device-width, initial-scale=1">
 
@@ -15,7 +13,7 @@
         rel="stylesheet"
     >
 
-    <!-- TaxFlow Custom CSS -->
+    <!-- TaxFlow CSS -->
     <link
         href="{{ asset('css/taxflow.css') }}"
         rel="stylesheet"
@@ -24,17 +22,15 @@
 
 <body class="taxflow-app">
 
-    <!-- Navbar bersama -->
+    <!-- Navbar Modern -->
     @include('partials.navbar')
 
-    <!-- Konten utama -->
     <main class="container-xl taxflow-page">
 
-        <!-- Header halaman -->
+        <!-- Header Halaman -->
         <div class="d-flex flex-wrap
                     justify-content-between
-                    align-items-center
-                    gap-3 mb-4">
+                    align-items-center gap-3 mb-4">
 
             <div>
                 <h1 class="h2 taxflow-page-title mb-2">
@@ -42,36 +38,30 @@
                 </h1>
 
                 <p class="taxflow-page-subtitle mb-0">
-                    Kelola jenis dan tarif pajak
-                    simulasi pada sistem TaxFlow.
+                    Kelola jenis dan tarif pajak simulasi
+                    pada sistem TaxFlow.
                 </p>
             </div>
 
-            <!-- Tambah jenis pajak -->
             <a href="{{ route('tax-types.create') }}"
                class="btn taxflow-btn-primary">
-
-                <span class="me-1">+</span>
-                Tambah Jenis Pajak
+                + Tambah Jenis Pajak
             </a>
 
         </div>
 
-        <!-- Informasi simulasi -->
+        <!-- Informasi Simulasi -->
         <div class="alert alert-info
                     border-0 rounded-4 mb-4"
              role="note">
 
             <strong>Informasi:</strong>
-            Tarif yang digunakan merupakan data
-            simulasi untuk pembelajaran,
-            bukan tarif pajak resmi.
-
+            Tarif yang digunakan merupakan data simulasi
+            untuk pembelajaran, bukan tarif pajak resmi.
         </div>
 
         <!-- Notifikasi -->
         @if (session('success'))
-
             <div class="alert alert-success
                         alert-dismissible fade show
                         rounded-4 mb-4"
@@ -84,111 +74,63 @@
                         data-bs-dismiss="alert"
                         aria-label="Tutup notifikasi">
                 </button>
-
             </div>
-
         @endif
 
-        <!-- Card daftar jenis pajak -->
+        <!-- Card Daftar Jenis Pajak -->
         <div class="card taxflow-card border-0">
-
             <div class="card-body p-4">
 
-                <!-- Header card -->
+                <!-- Header Card Tanpa Ikon -->
                 <div class="d-flex flex-wrap
                             justify-content-between
-                            align-items-center
-                            gap-3 mb-4">
+                            align-items-center gap-3 mb-4">
 
-                    <div class="d-flex
-                                align-items-center
-                                gap-3">
+                    <h2 class="h5 taxflow-card-title mb-0">
+                        Daftar Jenis Pajak
+                    </h2>
 
-                        <!-- Identitas modul -->
-                        <div
-                            class="d-flex align-items-center
-                                   justify-content-center
-                                   rounded-3"
-                            style="
-                                width: 44px;
-                                height: 44px;
-                                background: #e8f2ff;
-                                color: #075be8;
-                                font-size: 1.3rem;
-                                font-weight: 800;
-                            ">
-                            %
-                        </div>
-
-                        <h2 class="h5 taxflow-card-title mb-0">
-                            Daftar Jenis Pajak
-                        </h2>
-
-                    </div>
-
-                    <!-- Total data -->
                     <span class="taxflow-total">
                         Total: {{ $taxTypes->total() }}
                     </span>
-
                 </div>
 
                 <!-- Tabel -->
                 <div class="table-responsive">
-
-                    <table
-                        class="table table-hover
-                               align-middle taxflow-table">
+                    <table class="table table-hover
+                                  align-middle taxflow-table">
 
                         <thead>
                             <tr>
                                 <th scope="col">No.</th>
-
-                                <th scope="col">
-                                    Kode Pajak
-                                </th>
-
-                                <th scope="col">
-                                    Nama Jenis Pajak
-                                </th>
-
-                                <th scope="col">
-                                    Tarif (%)
-                                </th>
-
-                                <th scope="col">
-                                    Status
-                                </th>
-
-                                <th scope="col">
-                                    Aksi
-                                </th>
+                                <th scope="col">Kode Pajak</th>
+                                <th scope="col">Nama Jenis Pajak</th>
+                                <th scope="col">Tarif (%)</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody>
-
                             @forelse ($taxTypes as $taxType)
-
                                 <tr>
-
-                                    <!-- Nomor urut -->
+                                    <!-- Nomor Urut -->
                                     <td>
                                         {{ $taxTypes->firstItem() + $loop->index }}
                                     </td>
 
-                                    <!-- Kode pajak -->
+                                    <!-- Kode Pajak -->
                                     <td class="fw-semibold">
                                         {{ $taxType->tax_code }}
                                     </td>
 
-                                    <!-- Nama jenis pajak -->
+                                    <!-- Nama Jenis Pajak -->
                                     <td class="fw-bold">
                                         {{ $taxType->name }}
                                     </td>
 
-                                    <!-- Tarif simulasi -->
-                                    <td>
+                                    <!-- Tarif -->
+                                    <td class="text-nowrap">
                                         {{ number_format(
                                             (float) $taxType->rate_percent,
                                             2,
@@ -199,71 +141,38 @@
 
                                     <!-- Status -->
                                     <td>
-
                                         @if ($taxType->is_active)
-
-                                            <span
-                                                class="taxflow-status active">
-
-                                                <span class="me-1"
-                                                      aria-hidden="true">
-                                                    ●
-                                                </span>
-
+                                            <span class="taxflow-status active">
                                                 Aktif
                                             </span>
-
                                         @else
-
-                                            <span
-                                                class="taxflow-status inactive">
-
-                                                <span class="me-1"
-                                                      aria-hidden="true">
-                                                    ●
-                                                </span>
-
+                                            <span class="taxflow-status inactive">
                                                 Tidak Aktif
                                             </span>
-
                                         @endif
-
                                     </td>
 
                                     <!-- Aksi -->
                                     <td>
-
                                         <a
                                             href="{{ route('tax-types.edit', $taxType->id) }}"
                                             class="btn btn-outline-primary
                                                    btn-sm rounded-3 px-3">
-
                                             Edit
                                         </a>
-
                                     </td>
-
                                 </tr>
-
                             @empty
-
-                                <!-- Empty state -->
+                                <!-- Empty State -->
                                 <tr>
                                     <td colspan="6"
                                         class="text-center py-5">
 
-                                        <div class="mb-3"
-                                             style="font-size: 2rem;">
-                                            📋
-                                        </div>
-
-                                        <h3 class="h6 fw-bold
-                                                   text-secondary">
+                                        <h3 class="h6 fw-bold text-secondary">
                                             Belum ada jenis pajak
                                         </h3>
 
-                                        <p class="text-muted
-                                                  small mb-3">
+                                        <p class="text-muted small mb-3">
                                             Tambahkan jenis pajak simulasi
                                             untuk mulai mengelola tarif.
                                         </p>
@@ -271,43 +180,35 @@
                                         <a
                                             href="{{ route('tax-types.create') }}"
                                             class="btn taxflow-btn-primary btn-sm">
-
                                             + Tambah Jenis Pajak
                                         </a>
 
                                     </td>
                                 </tr>
-
                             @endforelse
-
                         </tbody>
 
                     </table>
-
                 </div>
 
                 <!-- Pagination -->
                 @if ($taxTypes->hasPages())
-
                     <div class="mt-4">
                         {{ $taxTypes->links('pagination::bootstrap-5') }}
                     </div>
-
                 @endif
 
             </div>
-
         </div>
 
     </main>
 
-    <!-- Footer bersama -->
+    <!-- Footer Modern -->
     @include('partials.footer')
 
     <!-- Bootstrap JavaScript -->
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
     </script>
-
 </body>
 </html>
