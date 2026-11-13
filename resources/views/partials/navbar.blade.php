@@ -45,6 +45,16 @@
                         align-items-lg-center
                         gap-lg-2 mt-3 mt-lg-0">
 
+                <a
+                    href="{{ route('dashboard') }}"
+                    class="nav-link taxflow-nav-link
+                        {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                    @if(request()->routeIs('dashboard'))
+                        aria-current="page"
+                    @endif>
+                    Dashboard
+                </a>
+
                 <!-- Merchant -->
                 <a
                     href="{{ route('merchants.index') }}"
