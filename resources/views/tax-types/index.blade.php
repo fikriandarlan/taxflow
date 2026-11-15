@@ -61,21 +61,7 @@
         </div>
 
         <!-- Notifikasi -->
-        @if (session('success'))
-            <div class="alert alert-success
-                        alert-dismissible fade show
-                        rounded-4 mb-4"
-                 role="alert">
-
-                {{ session('success') }}
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Tutup notifikasi">
-                </button>
-            </div>
-        @endif
+        @include('partials.success-modal')
 
         <!-- Card Daftar Jenis Pajak -->
         <div class="card taxflow-card border-0">

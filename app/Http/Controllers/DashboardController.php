@@ -5,44 +5,128 @@ namespace App\Http\Controllers;
 use App\Models\Merchant;
 use App\Models\TaxType;
 use App\Models\Transaction;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        // Statistik master data
+        // Daftar periode yang didukung.
+        // Default "all" memastikan data historis muncul.
+        $periodOptions = [
+            'all' => 'Semua Waktu',
+            '24h' => '24 Jam Terakhir',
+            '7d'  => '7 Hari Terakhir',
+            '30d' => '30 Hari Terakhir',
+            '3m'  => '3 Bulan Terakhir',
+            '6m'  => '6 Bulan Terakhir',
+            '1y'  => '1 Tahun Terakhir',
+        ];
+
+        $requestedPeriod = $request->query('period', 'all');
+
+        $period = is_string($requestedPeriod)
+            && array_key_exists($requestedPeriod, $periodOptions)
+                ? $requestedPeriod
+                : 'all';
+
+        $now = CarbonImmutable::now();
+
+        $startDate = match ($period) {
+            '24h' => $now->subHours(24),
+            '7d'  => $now->subDays(7),
+            '30d' => $now->subDays(30),
+            '3m'  => $now->subMonthsNoOverflow(3),
+            '6m'  => $now->subMonthsNoOverflow(6),
+            '1y'  => $now->subYearNoOverflow(),
+            default => null,
+        };
+
+        $taxTypes = TaxType::query()
+            ->orderBy('tax_code')
+            ->get([
+                'id',
+                'tax_code',
+                'name',
+                'rate_percent',
+                'is_active',
+            ]);
+
+        $requestedTaxType = $request->query(
+            'tax_type',
+            'all'
+        );
+
+        $selectedTaxType = 'all';
+
+        if (
+            is_string($requestedTaxType)
+            && ctype_digit($requestedTaxType)
+            && $taxTypes->contains(
+                'id',
+                (int) $requestedTaxType
+            )
+        ) {
+            $selectedTaxType = $requestedTaxType;
+        }
+
+        // Statistik sistem: seluruh data.
         $totalMerchants = Merchant::count();
 
         $activeMerchants = Merchant::where(
-            'is_active', true
+            'is_active',
+            true
         )->count();
 
-        $totalTaxTypes = TaxType::count();
+        $totalTaxTypes = $taxTypes->count();
 
-        $activeTaxTypes = TaxType::where(
-            'is_active', true
-        )->count();
+        $activeTaxTypes = $taxTypes
+            ->where('is_active', true)
+            ->count();
 
-        // Statistik status transaksi
         $totalTransactions = Transaction::count();
 
         $draftTransactions = Transaction::where(
-            'status', 'draft'
+            'status',
+            'draft'
         )->count();
 
         $completedTransactions = Transaction::where(
-            'status', 'completed'
+            'status',
+            'completed'
         )->count();
 
         $cancelledTransactions = Transaction::where(
-            'status', 'cancelled'
+            'status',
+            'cancelled'
         )->count();
 
-        // Nilai keuangan merupakan ringkasan simulasi.
-        // Tidak menghitung ulang atau mengubah transaksi.
-        $financialSummary = DB::table('transactions')
+        // Query transaksi yang berlaku hanya untuk
+        // Ringkasan Perhitungan Pajak.
+        $filteredQuery = DB::table('transactions');
+
+        if ($startDate !== null) {
+            $filteredQuery->whereBetween(
+                'transaction_date',
+                [$startDate, $now]
+            );
+        }
+
+        if ($selectedTaxType !== 'all') {
+            $filteredQuery->where(
+                'tax_type_id',
+                (int) $selectedTaxType
+            );
+        }
+
+        // PostgreSQL NUMERIC mempertahankan presisi.
+        $financialSummary = $filteredQuery
+            ->selectRaw(
+                'COUNT(*) AS transaction_count'
+            )
             ->selectRaw(
                 'COALESCE(SUM(base_amount), 0) AS base_total'
             )
@@ -54,6 +138,9 @@ class DashboardController extends Controller
             )
             ->first();
 
+        $filteredTransactionCount =
+            (int) $financialSummary->transaction_count;
+
         $totalBaseAmount =
             (string) $financialSummary->base_total;
 
@@ -63,19 +150,37 @@ class DashboardController extends Controller
         $totalGrandAmount =
             (string) $financialSummary->grand_total;
 
-        $completedTaxAmount = (string) Transaction::where(
-            'status', 'completed'
-        )->sum('tax_amount');
+        $effectivePercent = bccomp(
+            $totalBaseAmount,
+            '0',
+            2
+        ) > 0
+            ? bcdiv(
+                bcmul($totalTaxAmount, '100', 6),
+                $totalBaseAmount,
+                2
+            )
+            : '0.00';
 
-        // Data dinamis untuk setiap jenis pajak.
-        // LEFT JOIN memastikan jenis pajak yang
-        // belum mempunyai transaksi tetap muncul.
+        // Ringkasan per kategori mengikuti periode,
+        // tetapi tetap menampilkan semua kategori.
         $taxTypeSummaries = DB::table('tax_types as tt')
             ->leftJoin(
                 'transactions as t',
-                't.tax_type_id',
-                '=',
-                'tt.id'
+                function ($join) use ($startDate, $now) {
+                    $join->on(
+                        't.tax_type_id',
+                        '=',
+                        'tt.id'
+                    );
+
+                    if ($startDate !== null) {
+                        $join->whereBetween(
+                            't.transaction_date',
+                            [$startDate, $now]
+                        );
+                    }
+                }
             )
             ->select(
                 'tt.id',
@@ -106,15 +211,10 @@ class DashboardController extends Controller
             ->orderBy('tt.tax_code')
             ->get()
             ->map(function ($item) {
-                // Persentase efektif berdasarkan
-                // nominal pajak / nominal sebelum pajak.
-                // BCMath menghindari pembagian float.
                 $base = (string) $item->base_total;
                 $tax = (string) $item->tax_total;
 
-                $effectivePercent = bccomp(
-                    $base, '0', 2
-                ) > 0
+                $percent = bccomp($base, '0', 2) > 0
                     ? bcdiv(
                         bcmul($tax, '100', 6),
                         $base,
@@ -123,24 +223,25 @@ class DashboardController extends Controller
                     : '0.00';
 
                 return [
+                    'id' => $item->id,
                     'tax_code' => $item->tax_code,
                     'name' => $item->name,
                     'rate_percent' =>
                         (string) $item->rate_percent,
-                    'is_active' => (bool) $item->is_active,
+                    'is_active' =>
+                        (bool) $item->is_active,
                     'transaction_count' =>
                         (int) $item->transaction_count,
-                    'base_total' =>
-                        $base,
-                    'tax_total' =>
-                        $tax,
+                    'base_total' => $base,
+                    'tax_total' => $tax,
                     'grand_total' =>
                         (string) $item->grand_total,
-                    'effective_percent' =>
-                        $effectivePercent,
+                    'effective_percent' => $percent,
                 ];
             });
 
+        // Tetap menampilkan transaksi terbaru
+        // tanpa membatasi jenis pajak atau periode.
         $recentTransactions = Transaction::query()
             ->with([
                 'merchant:id,merchant_code,name',
@@ -151,6 +252,12 @@ class DashboardController extends Controller
             ->get();
 
         return view('dashboard.index', compact(
+            'periodOptions',
+            'period',
+            'taxTypes',
+            'selectedTaxType',
+            'startDate',
+            'now',
             'totalMerchants',
             'activeMerchants',
             'totalTaxTypes',
@@ -159,10 +266,11 @@ class DashboardController extends Controller
             'draftTransactions',
             'completedTransactions',
             'cancelledTransactions',
+            'filteredTransactionCount',
             'totalBaseAmount',
             'totalTaxAmount',
             'totalGrandAmount',
-            'completedTaxAmount',
+            'effectivePercent',
             'taxTypeSummaries',
             'recentTransactions'
         ));

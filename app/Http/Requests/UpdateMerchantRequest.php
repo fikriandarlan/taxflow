@@ -36,6 +36,23 @@ class UpdateMerchantRequest extends FormRequest
     {
         $merchant = $this->route('merchant');
 
+                $allowedAddresses = collect(
+            config('java_cities', [])
+        )
+            ->flatten()
+            ->values()
+            ->all();
+
+        // Izinkan alamat lama hanya untuk Merchant
+        // yang saat ini sedang diedit.
+        if (
+            $merchant !== null
+            && is_string($merchant->address)
+            && $merchant->address !== ''
+        ) {
+            $allowedAddresses[] = $merchant->address;
+        }
+
         return [
             'merchant_code' => [
                 'required',
@@ -67,6 +84,7 @@ class UpdateMerchantRequest extends FormRequest
             'address' => [
                 'nullable',
                 'string',
+                Rule::in($allowedAddresses),
             ],
 
             'is_active' => [
@@ -102,6 +120,9 @@ class UpdateMerchantRequest extends FormRequest
 
             'is_active.boolean' =>
                 'Status merchant tidak valid.',
+
+            'address.in' =>
+                'Pilih Kota/Kabupaten yang tersedia atau pertahankan alamat lama.',
         ];
     }
 }

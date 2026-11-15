@@ -190,28 +190,8 @@
                             @enderror
                         </div>
 
-                        <!-- Alamat -->
-                        <div class="col-12">
-                            <label for="address"
-                                   class="form-label fw-semibold">
-                                Alamat
-                            </label>
-
-                            <textarea
-                                id="address"
-                                name="address"
-                                rows="3"
-                                class="form-control rounded-3
-                                    @error('address') is-invalid @enderror"
-                                placeholder="Alamat Merchant"
-                            >{{ old('address') }}</textarea>
-
-                            @error('address')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                        <!-- Kota / Kabupaten Merchant -->
+                        @include('merchants.partials.city-select')
 
                         <!-- Status -->
                         <div class="col-12">

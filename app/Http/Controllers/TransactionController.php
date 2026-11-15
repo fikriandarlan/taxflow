@@ -9,6 +9,7 @@ use App\Models\TaxType;
 use App\Models\Transaction;
 use App\Services\TransactionCalculator;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -16,23 +17,82 @@ use Illuminate\View\View;
 
 class TransactionController extends Controller
 {
-    /**
-     * Menampilkan daftar transaksi.
-     */
-    public function index(): View
-    {
-        $transactions = Transaction::query()
-            ->with([
-                'merchant:id,merchant_code,name',
-                'taxType:id,tax_code,name',
-            ])
-            ->orderByDesc('id')
-            ->paginate(10);
+   
+/**
+ * Menampilkan daftar transaksi dengan
+ * sorting server-side dan pagination.
+ */
+public function index(Request $request): View
+{
+    // Hanya enam kolom ini yang boleh diurutkan.
+    $allowedSorts = [
+        'no' => 'transactions.id',
+        'date' => 'transactions.transaction_date',
+        'tax_type' => 'sort_tax_types.name',
+        'base_amount' => 'transactions.base_amount',
+        'tax_amount' => 'transactions.tax_amount',
+        'total_amount' => 'transactions.total_amount',
+    ];
 
-        return view('transactions.index', [
-            'transactions' => $transactions,
-        ]);
+    $requestedSort = $request->query('sort', 'no');
+    $requestedDirection = $request->query(
+        'direction',
+        'desc'
+    );
+
+    // Validasi query string agar tidak bisa
+    // memasukkan nama kolom sembarangan.
+    $sort = is_string($requestedSort)
+        && array_key_exists($requestedSort, $allowedSorts)
+            ? $requestedSort
+            : 'no';
+
+    $direction = is_string($requestedDirection)
+        && in_array(
+            $requestedDirection,
+            ['asc', 'desc'],
+            true
+        )
+            ? $requestedDirection
+            : 'desc';
+
+    $transactions = Transaction::query()
+        ->select('transactions.*')
+        ->leftJoin(
+            'tax_types as sort_tax_types',
+            'sort_tax_types.id',
+            '=',
+            'transactions.tax_type_id'
+        )
+        ->with([
+            'merchant:id,merchant_code,name',
+            'taxType:id,tax_code,name',
+        ])
+        ->orderBy(
+            $allowedSorts[$sort],
+            $direction
+        );
+
+    // Urutan kedua memastikan hasil stabil
+    // ketika banyak transaksi memiliki
+    // tanggal, kategori, atau nominal sama.
+    if ($sort !== 'no') {
+        $transactions->orderBy(
+            'transactions.id',
+            $direction
+        );
     }
+
+    $transactions = $transactions
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('transactions.index', [
+        'transactions' => $transactions,
+        'sort' => $sort,
+        'direction' => $direction,
+    ]);
+}
 
     /**
      * Menampilkan form Create Transaction.

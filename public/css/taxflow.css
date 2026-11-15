@@ -1,14 +1,22 @@
-/* ======================================
-   TAXFLOW — SHARED UI STYLES
-   ====================================== */
+
+/* ==================================================
+   TAXFLOW — SHARED APPLICATION STYLES
+   Navbar, Sidebar, Dashboard, Forms, Tables,
+   Dark/Light Theme, Jakarta Clock
+   ================================================== */
 
 :root {
-    --tf-primary: #075be8;
+    --tf-primary: #075bd9;
     --tf-primary-dark: #003db7;
     --tf-navy: #102957;
     --tf-muted: #64748b;
     --tf-border: #dce6f4;
     --tf-surface: #ffffff;
+    --tf-heading: #102957;
+
+    --tf-sidebar-width: 248px;
+    --tf-visible-sidebar-width: 248px;
+    --tf-topbar-height: 64px;
 }
 
 html {
@@ -17,10 +25,18 @@ html {
 
 body.taxflow-app {
     min-height: 100vh;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    margin: 0;
+
     color: var(--tf-navy);
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
     background:
         radial-gradient(
             ellipse at 90% 15%,
@@ -33,23 +49,21 @@ body.taxflow-app {
             #edf5ff 65%,
             #e1eeff 100%
         );
-    font-family:
-        Inter,
-        "Segoe UI",
-        Arial,
-        sans-serif;
 }
 
-body.taxflow-app > main {
-    flex: 1 0 auto;
-    width: 100%;
+body.taxflow-app,
+body.taxflow-app *,
+body.taxflow-app *::before,
+body.taxflow-app *::after {
+    box-sizing: border-box;
 }
 
-/* ======================================
+/* ==================================================
    NAVBAR
-   ====================================== */
+   ================================================== */
 
-.taxflow-navbar {
+.taxflow-navbar,
+.taxflow-topbar {
     background: linear-gradient(
         110deg,
         #0878ed 0%,
@@ -57,119 +71,310 @@ body.taxflow-app > main {
         #0039b4 100%
     );
 
-    padding: 16px 0;
-    box-shadow: 0 4px 20px rgba(0, 54, 144, 0.12);
+    box-shadow: 0 3px 14px rgba(0, 54, 144, 0.10);
 }
 
-.taxflow-brand {
+.taxflow-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+    min-height: var(--tf-topbar-height);
+    padding: 8px 0;
+}
+
+.taxflow-topbar .container-fluid {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.taxflow-navbar .taxflow-brand {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
     margin: 0;
+    padding: 0;
+
     color: #ffffff !important;
-    font-size: 1.5rem;
+    font-size: 1.22rem;
     font-weight: 800;
-    letter-spacing: -0.6px;
+    letter-spacing: -0.55px;
     text-decoration: none;
 }
 
-.taxflow-brand-mark {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 35px;
-    height: 35px;
-    border-radius: 11px;
-    background: rgba(255,255,255,0.2);
+.taxflow-navbar .taxflow-user-separator {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.97rem;
+    font-weight: 400;
+    margin: 0 2px;
+}
+
+.taxflow-navbar .taxflow-user-name {
     color: #ffffff;
-    font-weight: 800;
-    font-size: 1.1rem;
-}
-
-.taxflow-user {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    padding: 6px 13px 6px 7px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    font-size: 0.87rem;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.taxflow-user-avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 29px;
-    height: 29px;
-    border-radius: 50%;
-    background: #ffffff;
-    color: var(--tf-primary);
-    font-weight: 800;
-}
-
-.taxflow-nav-link {
-    color: rgba(255,255,255,0.88) !important;
-    padding: 10px 16px !important;
-    border-radius: 11px;
-    font-size: 0.93rem;
-    font-weight: 500;
-    transition: background 0.2s, color 0.2s;
-}
-
-.taxflow-nav-link:hover,
-.taxflow-nav-link.active {
-    color: #ffffff !important;
-    background: rgba(255,255,255,0.2);
-}
-
-.taxflow-nav-link.active {
+    font-size: 0.91rem;
     font-weight: 700;
-    box-shadow: inset 0 0 0 1px
-        rgba(255,255,255,0.22);
-}
+    line-height: 1.35;
 
-.taxflow-nav-divider {
-    height: 28px;
-    width: 1px;
-    margin: 0 8px;
-    background: rgba(255,255,255,0.3);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+
+    overflow-wrap: anywhere;
 }
 
 .taxflow-logout {
     color: #ffffff;
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.75);
-    border-radius: 10px;
-    padding: 9px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+
+    border-radius: 9px;
+    padding: 7px 16px;
+    min-height: 36px;
+
+    font-size: 0.87rem;
     font-weight: 600;
+    line-height: 1.3;
 }
 
-.taxflow-logout:hover {
-    color: var(--tf-primary-dark);
+.taxflow-logout:hover,
+.taxflow-logout:focus-visible {
+    color: #003db7;
     background: #ffffff;
     border-color: #ffffff;
 }
 
-.taxflow-toggler {
-    border-color: rgba(255,255,255,0.5);
+.taxflow-topbar-control {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.48);
+
+    border-radius: 9px;
+    padding: 6px 11px;
+
+    font-size: 0.81rem;
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
 }
 
-.taxflow-toggler .navbar-toggler-icon {
-    filter: brightness(0) invert(1);
+.taxflow-topbar-control:hover,
+.taxflow-topbar-control:focus-visible {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.20);
+    border-color: rgba(255, 255, 255, 0.72);
 }
 
-/* ======================================
-   GENERAL CONTENT
-   ====================================== */
-
-.taxflow-page {
-    padding-top: 52px;
-    padding-bottom: 70px;
+.taxflow-topbar-actions {
+    flex-shrink: 0;
 }
+
+/* Compatibility for older views */
+.taxflow-nav-link {
+    color: rgba(255, 255, 255, 0.88) !important;
+    padding: 9px 14px !important;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.taxflow-nav-link:hover,
+.taxflow-nav-link.active {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.taxflow-nav-divider {
+    height: 26px;
+    width: 1px;
+    margin: 0 8px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==================================================
+   SIDEBAR
+   ================================================== */
+
+.taxflow-global-sidebar {
+    position: fixed;
+
+    top: var(--tf-topbar-height);
+    left: 0;
+    bottom: 0;
+
+    z-index: 1030;
+
+    width: var(--tf-sidebar-width);
+
+    background: #ffffff;
+    border-right: 1px solid var(--tf-border);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    transform: translateX(0);
+    transition: transform 0.22s ease;
+}
+
+.taxflow-sidebar-inner {
+    min-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 27px 14px 20px;
+}
+
+.taxflow-sidebar-heading {
+    margin: 0 0 18px;
+    padding: 0 14px;
+
+    color: #8190a8;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+}
+
+.taxflow-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.taxflow-global-sidebar .taxflow-sidebar-link {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 15px;
+
+    border-radius: 10px;
+
+    color: #304664;
+    background: transparent;
+
+    font-size: 0.93rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.taxflow-global-sidebar .taxflow-sidebar-link:hover {
+    background: #edf4ff;
+    color: #075bd9;
+}
+
+.taxflow-global-sidebar .taxflow-sidebar-link.active {
+    color: #ffffff;
+    background: #075bd9;
+    box-shadow: 0 4px 10px rgba(7, 91, 217, 0.13);
+}
+
+.taxflow-sidebar-link:focus-visible {
+    outline: 3px solid #92bcff;
+    outline-offset: 2px;
+}
+
+.taxflow-sidebar-bottom {
+    margin-top: auto;
+    padding: 18px 14px 0;
+
+    border-top: 1px solid var(--tf-border);
+
+    color: var(--tf-muted);
+    font-size: 0.75rem;
+    line-height: 1.55;
+}
+
+.taxflow-sidebar-bottom strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--tf-navy);
+}
+
+/* ==================================================
+   SIDEBAR SHOW / HIDE
+   ================================================== */
+
+body.taxflow-app.taxflow-sidebar-collapsed {
+    --tf-visible-sidebar-width: 0px;
+}
+
+body.taxflow-app.taxflow-sidebar-collapsed
+.taxflow-global-sidebar {
+    transform: translateX(-100%);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ==================================================
+   PAGE LAYOUT
+   ================================================== */
+
+body.taxflow-app > main.taxflow-page {
+    flex: 1 0 auto;
+    display: block;
+
+    width: calc(100% - var(--tf-visible-sidebar-width));
+    max-width: none;
+    min-width: 0;
+
+    margin: 0;
+    margin-left: var(--tf-visible-sidebar-width);
+
+    padding:
+        34px clamp(18px, 2.4vw, 40px)
+        46px;
+
+    transition:
+        margin-left 0.22s ease,
+        width 0.22s ease;
+}
+
+body.taxflow-app > main:not(.taxflow-page) {
+    flex: 1 0 auto;
+    min-width: 0;
+}
+
+body.taxflow-app >
+.taxflow-global-sidebar ~ main:not(.taxflow-page) {
+    width: calc(100% - var(--tf-visible-sidebar-width));
+    max-width: none;
+
+    margin-left: var(--tf-visible-sidebar-width);
+
+    padding-left: 24px;
+    padding-right: 24px;
+
+    transition:
+        margin-left 0.22s ease,
+        width 0.22s ease;
+}
+
+.taxflow-dashboard-main {
+    min-width: 0;
+}
+
+.taxflow-dashboard-main > *,
+.taxflow-dashboard-main section,
+.taxflow-dashboard-main .card,
+.taxflow-dashboard-main .card-body,
+.taxflow-dashboard-main .table-responsive {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.taxflow-dashboard-main .row > * {
+    min-width: 0;
+}
+
+/* ==================================================
+   SHARED TYPOGRAPHY
+   ================================================== */
 
 .taxflow-page-title {
     color: var(--tf-navy);
@@ -182,9 +387,12 @@ body.taxflow-app > main {
 }
 
 .taxflow-card {
+    min-width: 0;
     background: var(--tf-surface);
+
     border: 1px solid rgba(225, 234, 247, 0.8);
     border-radius: 18px;
+
     box-shadow: 0 12px 35px rgba(22, 61, 115, 0.07);
 }
 
@@ -193,49 +401,99 @@ body.taxflow-app > main {
     font-weight: 750;
 }
 
+/* ==================================================
+   BUTTONS
+   ================================================== */
+
 .taxflow-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
     background: linear-gradient(
         135deg,
         #0878fa,
         #0046d3
     );
-    border: 0;
-    color: #ffffff;
+
+    border: none;
     border-radius: 11px;
-    padding: 11px 19px;
+
+    padding: 10px 17px;
+
+    color: #ffffff;
     font-weight: 600;
+    text-decoration: none;
+
     box-shadow: 0 5px 12px rgba(0, 84, 214, 0.17);
 }
 
-.taxflow-btn-primary:hover {
+.taxflow-btn-primary:hover,
+.taxflow-btn-primary:focus-visible {
     color: #ffffff;
     background: #003db7;
+}
+
+.taxflow-btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 16px;
+
+    background: #ffffff;
+    color: #075bd9;
+
+    border: 1px solid #c6d8f2;
+    border-radius: 11px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    box-shadow: 0 3px 10px rgba(12, 72, 150, 0.05);
+}
+
+.taxflow-btn-back:hover {
+    background: #eaf3ff;
+    color: #0046c7;
+    border-color: #84b4fb;
 }
 
 .taxflow-total {
     display: inline-flex;
     padding: 7px 13px;
+
     background: #e2efff;
     color: #075bd9;
+
     border-radius: 999px;
+
     font-size: 0.88rem;
     font-weight: 700;
 }
+
+/* ==================================================
+   TABLES
+   ================================================== */
 
 .taxflow-table {
     border-color: var(--tf-border);
 }
 
 .taxflow-table thead th {
+    padding: 14px;
     background: #eaf2ff;
     color: var(--tf-navy);
+
     font-weight: 700;
+
     border-bottom: 1px solid var(--tf-border);
-    padding: 15px;
 }
 
 .taxflow-table tbody td {
-    padding: 15px;
+    padding: 14px;
     vertical-align: middle;
 }
 
@@ -243,13 +501,24 @@ body.taxflow-app > main {
     background: #f7faff;
 }
 
+.table-responsive {
+    max-width: 100%;
+}
+
+/* ==================================================
+   STATUS BADGES
+   ================================================== */
+
 .taxflow-status {
     display: inline-flex;
     align-items: center;
-    border-radius: 999px;
+
     padding: 6px 11px;
-    font-weight: 700;
+
+    border-radius: 999px;
+
     font-size: 0.82rem;
+    font-weight: 700;
 }
 
 .taxflow-status.active {
@@ -262,242 +531,1146 @@ body.taxflow-app > main {
     color: #475569;
 }
 
-/* ======================================
-   FOOTER
-   ====================================== */
+/* ==================================================
+   DASHBOARD
+   ================================================== */
 
-.taxflow-footer {
+.taxflow-dashboard-header {
+    padding-top: 2px;
+}
+
+.taxflow-eyebrow {
+    color: #075bd9;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+}
+
+.taxflow-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.taxflow-section-header h2 {
+    color: var(--tf-navy);
+}
+
+.taxflow-menu-card .card-body,
+.taxflow-stat-card .card-body,
+.taxflow-center-card .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+    padding: 21px 16px;
+
+    text-align: center;
+}
+
+.taxflow-menu-card .card-body {
+    min-height: 166px;
+}
+
+.taxflow-stat-card .card-body,
+.taxflow-center-card .card-body {
+    min-height: 150px;
+}
+
+.taxflow-menu-card .btn {
+    min-width: 145px;
+    max-width: 100%;
     margin-top: auto;
-    padding: 28px 0 30px;
-    background: rgba(255,255,255,0.38);
-    border-top: 1px solid rgba(205,220,240,0.6);
+}
+
+.taxflow-menu-card p {
+    max-width: 260px;
+    line-height: 1.6;
+}
+
+.taxflow-stat-value {
+    margin: 0 0 10px;
+
+    color: var(--tf-navy);
+
+    font-size: clamp(1.8rem, 2.3vw, 2.4rem);
+    font-weight: 800;
+}
+
+.taxflow-finance-card,
+.taxflow-summary-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: 100%;
+    min-height: 140px;
+
+    padding: 22px 14px;
+
+    background: #f3f7fd;
+
+    border: 1px solid #e1eaf8;
+    border-radius: 14px;
+
+    text-align: center;
+}
+
+.taxflow-finance-value {
+    margin: 0;
+
+    color: var(--tf-navy);
+
+    font-size: clamp(1.05rem, 1.5vw, 1.45rem);
+    font-weight: 800;
+
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.taxflow-filter-description {
+    padding: 15px 18px;
+
+    background: #f7faff;
+
+    border: 1px solid var(--tf-border);
+    border-radius: 12px;
+}
+
+.taxflow-effective-tax {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+    padding: 20px;
+
+    background: #edf5ff;
+
+    border: 1px solid #d9e9ff;
+    border-radius: 14px;
+}
+
+.taxflow-effective-value {
+    color: #075bd9;
+    font-size: 1.35rem;
+}
+
+.taxflow-category-card .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.taxflow-category-details {
+    border-top: 1px solid var(--tf-border);
+    padding-top: 16px;
+}
+
+.taxflow-amount-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    gap: 12px;
+    padding: 8px 0;
+
+    font-size: 0.9rem;
+}
+
+.taxflow-amount-row span {
+    color: var(--tf-muted);
+}
+
+.taxflow-amount-row strong {
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.taxflow-category-card .btn {
+    margin-top: auto;
+}
+
+.taxflow-empty-state {
+    padding: 40px;
+
+    background: #ffffff;
+    border-radius: 14px;
+
+    color: var(--tf-muted);
+    text-align: center;
+}
+
+/* ==================================================
+   JAKARTA CLOCK — WIB
+   ================================================== */
+
+.taxflow-jakarta-clock {
+    margin: 38px 8px 24px;
+    padding: 17px 15px;
+
+    border: 1px solid #d9e7fa;
+    border-radius: 13px;
+
+    background: #f1f7ff;
+}
+
+.taxflow-clock-label {
+    margin: 0 0 9px;
+
+    color: #617b9b;
+
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.taxflow-clock-time {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+
+    margin: 0 0 6px;
+
+    color: var(--tf-navy);
+    font-size: 1.45rem;
+    font-weight: 800;
+
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.taxflow-clock-time span {
+    color: #075bd9;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.taxflow-clock-date {
+    margin: 0;
+
+    color: var(--tf-muted);
+    font-size: 0.74rem;
+    line-height: 1.5;
+}
+
+/* ==================================================
+   FOOTER
+   ================================================== */
+
+body.taxflow-app > footer.taxflow-footer {
+    width: calc(100% - var(--tf-visible-sidebar-width));
+    max-width: none;
+
+    margin: auto 0 0 var(--tf-visible-sidebar-width);
+
+    padding: 10px 18px;
+
+    background: rgba(255, 255, 255, 0.38);
+    border-top: 1px solid rgba(205, 220, 240, 0.6);
+
+    transition:
+        margin-left 0.22s ease,
+        width 0.22s ease;
 }
 
 .taxflow-footer-inner {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 25px;
+    justify-content: center;
+    gap: 14px;
 }
 
 .taxflow-footer-line {
     width: 100%;
-    max-width: 220px;
+    max-width: 100px;
     height: 1px;
+
     background: #c5d5eb;
 }
 
 .taxflow-footer-text {
     color: #64748b;
-    font-size: 0.9rem;
+
+    font-size: 0.75rem;
+    line-height: 1.4;
+
     text-align: center;
-    white-space: nowrap;
 }
 
-/* ======================================
-   RESPONSIVE
-   ====================================== */
+/* ==================================================
+   DARK MODE
+   ================================================== */
+
+body.taxflow-app[data-tf-theme="dark"] {
+    --tf-navy: #eef4ff;
+    --tf-heading: #eef4ff;
+    --tf-muted: #aebed1;
+    --tf-border: #34445d;
+    --tf-surface: #1b293e;
+
+    color: #eef4ff;
+
+    background: linear-gradient(
+        150deg,
+        #111c2e,
+        #182740 65%,
+        #17253b
+    );
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-global-sidebar,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-card,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-empty-state {
+    background: #1b293e;
+    color: #edf4ff;
+    border-color: #34445d;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-global-sidebar .taxflow-sidebar-link {
+    color: #d4e3f8;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-global-sidebar .taxflow-sidebar-link:hover {
+    color: #ffffff;
+    background: #2b4262;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-global-sidebar .taxflow-sidebar-link.active {
+    color: #ffffff;
+    background: #165bd7;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-sidebar-heading,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-clock-label {
+    color: #9bb1cf;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-page-title,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-card-title,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-section-header h2,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-sidebar-bottom strong,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-stat-value {
+    color: #edf4ff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-jakarta-clock,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-finance-card,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-summary-box,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-filter-description,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-effective-tax {
+    background: #233651;
+    color: #edf4ff;
+    border-color: #415776;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-clock-time,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-finance-value,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-effective-value,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-clock-time span {
+    color: #90baff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-page-subtitle,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-clock-date,
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-amount-row span,
+
+body.taxflow-app[data-tf-theme="dark"]
+.text-muted {
+    color: #b3c2d5 !important;
+}
+
+/* Dark table */
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-table,
+
+body.taxflow-app[data-tf-theme="dark"]
+.table {
+    --bs-table-bg: #1b293e;
+    --bs-table-color: #edf4ff;
+    --bs-table-hover-bg: #263954;
+    --bs-table-border-color: #34445d;
+
+    color: #edf4ff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-table thead th {
+    background: #263a59;
+    color: #edf4ff;
+    border-color: #405470;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-table tbody tr:hover td {
+    background: #263954;
+}
+
+/* Dark buttons and badges */
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-btn-back {
+    background: #233651;
+    border-color: #466389;
+    color: #b9d5ff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-btn-back:hover {
+    background: #304969;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-total {
+    background: #253e61;
+    color: #b9d5ff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-status.active {
+    background: #153e33;
+    color: #97f6c0;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-status.inactive {
+    background: #354359;
+    color: #e2e8f0;
+}
+
+/* Dark forms */
+body.taxflow-app[data-tf-theme="dark"]
+.form-control,
+
+body.taxflow-app[data-tf-theme="dark"]
+.form-select,
+
+body.taxflow-app[data-tf-theme="dark"]
+.input-group-text,
+
+body.taxflow-app[data-tf-theme="dark"]
+.form-control:disabled {
+    color: #edf4ff;
+    background-color: #243650;
+    border-color: #4b6080;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.form-control::placeholder {
+    color: #b0c0d4;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.form-control:focus,
+
+body.taxflow-app[data-tf-theme="dark"]
+.form-select:focus {
+    border-color: #89b7ff;
+
+    box-shadow:
+        0 0 0 3px rgba(117, 169, 255, 0.20);
+}
+
+/* Dark alerts */
+body.taxflow-app[data-tf-theme="dark"]
+.alert-info {
+    color: #c3e5ff;
+    background: #1d405a;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.alert-warning {
+    color: #ffe6b1;
+    background: #4a3a20;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.alert-success {
+    color: #c4f7d4;
+    background: #194333;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.alert-danger {
+    color: #ffd6d6;
+    background: #542c36;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.bg-light {
+    background: #263954 !important;
+}
+
+/* Dark footer */
+body.taxflow-app[data-tf-theme="dark"]
+footer.taxflow-footer {
+    background: #17253a;
+    border-color: #34445d;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-footer-line {
+    background: #405571;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-footer-text {
+    color: #b3c2d5;
+}
+
+/* ==================================================
+   RESPONSIVE LAYOUT
+   ================================================== */
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .taxflow-dashboard-main .row > .col-md-4 {
+        flex: 0 0 50%;
+        width: 50%;
+        max-width: 50%;
+    }
+}
 
 @media (max-width: 991.98px) {
-    .taxflow-navbar {
-        padding: 12px 0;
+    .taxflow-global-sidebar {
+        position: relative;
+        top: auto;
+        left: auto;
+        bottom: auto;
+
+        width: 100%;
+        height: auto;
+
+        overflow: visible;
+
+        border-right: none;
+        border-bottom: 1px solid var(--tf-border);
     }
 
-    .taxflow-nav-divider {
+    .taxflow-sidebar-inner {
+        min-height: 0;
+        padding: 12px 16px;
+    }
+
+    .taxflow-sidebar-heading,
+    .taxflow-sidebar-bottom {
         display: none;
     }
 
-    .taxflow-page {
-        padding-top: 28px;
+    .taxflow-sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 5px;
     }
 
-    .taxflow-logout {
-        margin-top: 8px;
+    .taxflow-global-sidebar .taxflow-sidebar-link {
+        width: auto;
+        min-height: 42px;
+
+        padding: 10px 14px;
+        font-size: 0.88rem;
+    }
+
+    .taxflow-jakarta-clock {
+        margin: 22px 5px 12px;
+    }
+
+    body.taxflow-app > main.taxflow-page,
+    body.taxflow-app >
+    .taxflow-global-sidebar ~ main:not(.taxflow-page) {
+        width: 100%;
+        max-width: 100%;
+
+        margin-left: 0;
+        margin-right: 0;
+
+        padding: 25px 20px 35px;
+    }
+
+    body.taxflow-app > footer.taxflow-footer {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    body.taxflow-app.taxflow-sidebar-collapsed
+    .taxflow-global-sidebar {
+        display: none;
+    }
+
+    .taxflow-dashboard-main .row > .col-md-4 {
+        flex: 0 0 50%;
+        width: 50%;
+        max-width: 50%;
     }
 }
 
-@media (max-width: 576px) {
-    .taxflow-brand {
-        font-size: 1.15rem;
+@media (max-width: 767.98px) {
+    .taxflow-dashboard-main .row > .col-md-4,
+    .taxflow-dashboard-main .row > .col-lg-6 {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
     }
 
-    .taxflow-user {
-        font-size: 0.72rem;
-        padding-right: 9px;
+    body.taxflow-app > main.taxflow-page,
+    body.taxflow-app >
+    .taxflow-global-sidebar ~ main:not(.taxflow-page) {
+        padding-left: 14px;
+        padding-right: 14px;
     }
 
-    .taxflow-user-avatar {
-        width: 25px;
-        height: 25px;
+    .taxflow-finance-value {
+        font-size: 1.13rem;
     }
 
-    .taxflow-footer-inner {
-        gap: 12px;
+    .taxflow-effective-tax {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .taxflow-footer-line {
-        max-width: 40px;
+    .taxflow-amount-row {
+        flex-wrap: wrap;
     }
-
-    .taxflow-footer-text {
-        font-size: 0.72rem;
-        white-space: normal;
-    }
-}
-
-/* Revisi UI minimalis tanpa logo/avatar */
-
-.taxflow-brand {
-    gap: 0;
-    font-weight: 800;
-    letter-spacing: -0.6px;
-}
-
-.taxflow-user-name {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: #ffffff;
-}
-
-.taxflow-card-title {
-    font-weight: 750;
-}
-
-/* ======================================
-   TAXFLOW — BACK BUTTON
-   ====================================== */
-
-.taxflow-btn-back {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 17px;
-
-    background: #ffffff;
-    color: #075be8;
-
-    border: 1px solid #c6d8f2;
-    border-radius: 11px;
-
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-
-    box-shadow: 0 3px 10px rgba(12, 72, 150, 0.05);
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-.taxflow-btn-back:hover {
-    background: #eaf3ff;
-    color: #0046c7;
-    border-color: #84b4fb;
-
-    box-shadow: 0 5px 15px rgba(0, 84, 214, 0.12);
-    transform: translateY(-1px);
-}
-
-.taxflow-btn-back:focus-visible {
-    outline: 3px solid rgba(0, 96, 230, 0.3);
-    outline-offset: 2px;
-}
-
-.taxflow-btn-back:active {
-    transform: translateY(0);
-}
-
-/* TaxFlow — Navbar User Identity */
-
-.taxflow-user-separator {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 1.15rem;
-    font-weight: 400;
-}
-
-.taxflow-user-name {
-    color: #ffffff;
-    font-size: 0.95rem;
-    font-weight: 700;
-    line-height: 1.4;
-    white-space: nowrap;
 }
 
 @media (max-width: 575.98px) {
-    .taxflow-user-name {
-        font-size: 0.85rem;
-        white-space: normal;
-        overflow-wrap: anywhere;
+    .taxflow-topbar .container-fluid {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .taxflow-topbar-control {
+        font-size: 0.73rem;
+        padding: 6px 8px;
+    }
+
+    .taxflow-navbar .taxflow-brand {
+        font-size: 1.04rem;
+    }
+
+    .taxflow-navbar .taxflow-user-name {
+        font-size: 0.78rem;
+    }
+
+    .taxflow-logout {
+        padding: 6px 9px;
+        min-height: 32px;
+        font-size: 0.78rem;
+    }
+
+    .taxflow-topbar-actions {
+        margin-left: auto;
+    }
+
+    .taxflow-clock-time {
+        font-size: 1.2rem;
+    }
+
+    .taxflow-menu-card .card-body,
+    .taxflow-stat-card .card-body {
+        min-height: 128px;
+    }
+
+    .taxflow-footer-text {
+        font-size: 0.7rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.taxflow-app > main.taxflow-page,
+    body.taxflow-app > footer.taxflow-footer,
+    body.taxflow-app .taxflow-global-sidebar {
+        transition: none;
     }
 }
 
 /* ==========================================
-   TAXFLOW — NAVBAR IDENTITY FINAL
+   TAXFLOW — SUCCESS NOTIFICATION MODAL
    ========================================== */
 
-.taxflow-navbar .taxflow-brand {
-    display: inline-flex;
+.taxflow-success-modal .modal-dialog {
+    max-width: 390px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px;
+}
+
+.taxflow-success-modal .modal-content {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e5edf8;
+    border-radius: 20px;
+
+    box-shadow:
+        0 24px 70px rgba(15, 43, 85, 0.20);
+}
+
+.taxflow-success-modal .modal-body {
+    padding: 34px 28px 30px;
+
+    display: flex;
+    flex-direction: column;
     align-items: center;
 
-    margin: 0;
-    padding: 0;
+    text-align: center;
+}
 
-    color: #ffffff !important;
-    font-size: 1.35rem;
+.taxflow-success-symbol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 66px;
+    height: 66px;
+
+    margin: 0 auto 19px;
+
+    background: #dcfce7;
+    color: #16803d;
+
+    border-radius: 50%;
+
+    font-size: 2rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
-    text-decoration: none;
+    line-height: 1;
 }
 
-.taxflow-navbar .taxflow-user-separator {
-    display: inline-block;
+.taxflow-success-title {
+    width: 100%;
 
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    margin: 0 0 11px;
 
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.1rem;
-    font-weight: 400;
+    color: #102957;
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.35;
 
-    padding: 0;
-    margin: 0 2px;
+    text-align: center;
 }
 
-.taxflow-navbar .taxflow-user-name {
-    display: inline-block;
+.taxflow-success-message {
+    width: 100%;
+    max-width: 310px;
 
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
+    margin: 0 0 25px;
 
-    color: #ffffff;
+    color: #64748b;
     font-size: 0.95rem;
-    font-weight: 700;
-    line-height: 1.4;
+    font-weight: 500;
+    line-height: 1.65;
 
-    padding: 0;
-    margin: 0;
-    white-space: nowrap;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.taxflow-success-close {
+    min-width: 150px;
+    min-height: 42px;
+
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+/* Dark Mode */
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-success-modal .modal-content {
+    background: #1b293e;
+    border-color: #34445d;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-success-title {
+    color: #edf4ff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-success-message {
+    color: #b3c2d5;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-success-symbol {
+    background: #153e33;
+    color: #97f6c0;
 }
 
 /* Responsive */
+
 @media (max-width: 575.98px) {
-    .taxflow-navbar .taxflow-brand {
-        font-size: 1.15rem;
+
+    .taxflow-success-modal .modal-dialog {
+        max-width: calc(100% - 24px);
     }
 
-    .taxflow-navbar .taxflow-user-separator {
-        font-size: 0.95rem;
+    .taxflow-success-modal .modal-body {
+        padding: 28px 20px 25px;
     }
 
-    .taxflow-navbar .taxflow-user-name {
-        font-size: 0.85rem;
-        white-space: normal;
-        overflow-wrap: anywhere;
+    .taxflow-success-title {
+        font-size: 1.25rem;
+    }
+
+    .taxflow-success-message {
+        font-size: 0.88rem;
+    }
+
+    .taxflow-success-close {
+        width: 100%;
+    }
+}
+
+
+/* ==========================================
+   TAXFLOW — MERCHANT CITY SELECT
+   ========================================== */
+
+.taxflow-app #address.form-select {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 16px;
+
+    border-radius: 11px;
+    border: 1px solid #cbd9ec;
+
+    font-size: 0.94rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.taxflow-app #address.form-select:focus {
+    border-color: #075bd9;
+    box-shadow: 0 0 0 3px
+        rgba(7, 91, 217, 0.12);
+}
+
+/* Tombol Kembali Merchant */
+.taxflow-app .taxflow-btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+    padding: 10px 17px;
+
+    border-radius: 11px;
+    border: 1px solid #c6d8f2;
+
+    background: #ffffff;
+    color: #075bd9;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.taxflow-app .taxflow-btn-back:hover {
+    background: #eaf3ff;
+    color: #0046c7;
+    border-color: #84b4fb;
+}
+
+/* Dark Mode */
+body.taxflow-app[data-tf-theme="dark"]
+#address.form-select {
+    background-color: #243650;
+    border-color: #4b6080;
+    color: #edf4ff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-btn-back {
+    background: #233651;
+    color: #b9d5ff;
+    border-color: #466389;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-btn-back:hover {
+    background: #304969;
+}
+
+/* ==========================================
+   TAXFLOW — COMPACT TRANSACTION TABLE
+   ========================================== */
+
+/* Area tabel */
+.taxflow-transaction-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 10px;
+}
+
+/* Ukuran tabel lebih ringkas */
+.taxflow-transaction-table {
+    width: 100%;
+    min-width: 960px;
+    margin-bottom: 0;
+    font-size: 0.78rem;
+    table-layout: auto;
+}
+
+/* Header tabel */
+.taxflow-transaction-table thead th {
+    padding: 10px 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.3;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Isi tabel */
+.taxflow-transaction-table tbody td {
+    padding: 11px 6px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    vertical-align: middle;
+}
+
+/* Informasi tambahan */
+.taxflow-transaction-table tbody td .small {
+    font-size: 0.7rem;
+    line-height: 1.35;
+}
+
+/* Header dengan sorting */
+.taxflow-sort-heading-inner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.taxflow-sort-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Container tombol panah */
+.taxflow-sort-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    flex-shrink: 0;
+}
+
+/* Panah naik dan turun */
+.taxflow-sort-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 19px;
+    height: 22px;
+
+    padding: 0;
+    border-radius: 5px;
+
+    color: #7387a5;
+    background: transparent;
+
+    font-size: 0.85rem;
+    font-weight: 800;
+    line-height: 1;
+
+    text-decoration: none;
+
+    transition:
+        color 0.15s ease,
+        background 0.15s ease;
+}
+
+.taxflow-sort-arrow:hover {
+    color: #075bd9;
+    background: #dcecff;
+}
+
+.taxflow-sort-arrow.active {
+    color: #ffffff;
+    background: #075bd9;
+}
+
+.taxflow-sort-arrow:focus-visible {
+    outline: 2px solid #075bd9;
+    outline-offset: 2px;
+}
+
+/* Nomor urut */
+.taxflow-transaction-number {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Kolom nominal */
+.taxflow-money-cell {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.15px;
+}
+
+/* Tombol Edit lebih kecil */
+.taxflow-transaction-table tbody td .btn {
+    padding: 5px 10px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    border-radius: 7px;
+}
+
+/* Badge status */
+.taxflow-transaction-table .taxflow-status,
+.taxflow-transaction-table .badge {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Informasi urutan aktif */
+.taxflow-sort-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 8px;
+    padding: 10px 13px;
+
+    background: #f3f7fd;
+    border: 1px solid #e1eaf8;
+    border-radius: 10px;
+}
+
+.taxflow-sort-reset {
+    color: #075bd9;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.taxflow-sort-reset:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   DARK MODE
+   ========================================== */
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-sort-summary {
+    background: #233651;
+    border-color: #415776;
+    color: #edf4ff;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-sort-arrow {
+    color: #b4c7e2;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-sort-arrow:hover {
+    color: #ffffff;
+    background: #344c6d;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-sort-arrow.active {
+    color: #ffffff;
+    background: #165bd7;
+}
+
+body.taxflow-app[data-tf-theme="dark"]
+.taxflow-sort-reset {
+    color: #9bc3ff;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 1199.98px) {
+    .taxflow-transaction-table {
+        min-width: 960px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .taxflow-transaction-table {
+        min-width: 900px;
+    }
+
+    .taxflow-transaction-table thead th,
+    .taxflow-transaction-table tbody td {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .taxflow-sort-heading-inner {
+        gap: 3px;
+    }
+
+    .taxflow-sort-arrow {
+        width: 19px;
+        height: 22px;
+    }
+
+    .taxflow-sort-summary {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

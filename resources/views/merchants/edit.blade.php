@@ -27,8 +27,8 @@
 
         <div class="mb-4">
             <a href="{{ route('merchants.index') }}"
-               class="text-decoration-none fw-semibold">
-                Kembali ke Daftar Merchant
+            class="btn taxflow-btn-back">
+                &larr; Kembali ke Daftar Merchant
             </a>
         </div>
 
@@ -183,27 +183,10 @@
                             @enderror
                         </div>
 
-                        <!-- Alamat -->
-                        <div class="col-12">
-                            <label for="address"
-                                   class="form-label fw-semibold">
-                                Alamat
-                            </label>
-
-                            <textarea
-                                id="address"
-                                name="address"
-                                rows="3"
-                                class="form-control rounded-3
-                                    @error('address') is-invalid @enderror"
-                            >{{ old('address', $merchant->address) }}</textarea>
-
-                            @error('address')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                        <!-- Kota / Kabupaten Merchant -->
+                        @include('merchants.partials.city-select', [
+                            'merchant' => $merchant
+                        ])
 
                         <!-- Status -->
                         <div class="col-12">

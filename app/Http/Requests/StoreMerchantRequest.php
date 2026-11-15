@@ -3,6 +3,7 @@
     namespace App\Http\Requests;
 
     use Illuminate\Foundation\Http\FormRequest;
+    use Illuminate\Validation\Rule;
 
     class StoreMerchantRequest extends FormRequest
     {
@@ -60,6 +61,12 @@
                 'address' => [
                     'nullable',
                     'string',
+                    Rule::in(
+                        collect(config('java_cities', []))
+                            ->flatten()
+                            ->values()
+                            ->all()
+                    ),
                 ],
 
                 'is_active' => [
@@ -83,6 +90,7 @@
                 'email.email' => 'Format email tidak valid.',
                 'is_active.required' => 'Status merchant wajib dipilih.',
                 'is_active.boolean' => 'Status merchant tidak valid.',
+                'address.in' => 'Pilih Kota/Kabupaten dari daftar yang tersedia.',
             ];
         }
     }

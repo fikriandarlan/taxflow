@@ -1,21 +1,29 @@
-<nav class="navbar navbar-expand-lg taxflow-navbar">
-    <div class="container-xl">
+<nav class="navbar taxflow-navbar taxflow-topbar"
+     aria-label="Bilah atas TaxFlow">
 
-        <!-- Identitas Aplikasi dan Pengguna -->
+    <div class="container-fluid px-3 px-lg-4">
+
         <div class="d-flex align-items-center flex-wrap gap-2">
 
-            <!-- Nama Aplikasi -->
-            <a class="navbar-brand taxflow-brand mb-0 me-0"
-               href="{{ route('merchants.index') }}">
+            @auth
+                <button
+                    type="button"
+                    id="taxflowSidebarToggle"
+                    class="btn taxflow-topbar-control"
+                    aria-controls="taxflowSidebar"
+                    aria-expanded="true">
+                    Tutup Menu
+                </button>
+            @endauth
+
+            <a href="{{ route('dashboard') }}"
+               class="navbar-brand taxflow-brand mb-0 me-0">
                 TaxFlow
             </a>
 
-            <!-- Pemisah dan Nama Pengguna -->
             @auth
                 <span class="taxflow-user-separator"
-                      aria-hidden="true">
-                    |
-                </span>
+                      aria-hidden="true">|</span>
 
                 <span class="taxflow-user-name">
                     {{ auth()->user()->name }}
@@ -24,86 +32,40 @@
 
         </div>
 
-        <!-- Navigasi Mobile -->
-        <button
-            class="navbar-toggler taxflow-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#taxflowNavbar"
-            aria-controls="taxflowNavbar"
-            aria-expanded="false"
-            aria-label="Buka navigasi">
+        @auth
+            <div class="d-flex align-items-center gap-2 ms-auto taxflow-topbar-actions">
 
-            <span class="navbar-toggler-icon"></span>
-        </button>
+                <button
+                    type="button"
+                    id="taxflowThemeToggle"
+                    class="btn taxflow-topbar-control"
+                    aria-label="Aktifkan mode gelap"
+                    aria-pressed="false">
+                    Mode Gelap
+                </button>
 
-        <!-- Navigasi Utama -->
-        <div class="collapse navbar-collapse"
-             id="taxflowNavbar">
-
-            <div class="navbar-nav ms-auto
-                        align-items-lg-center
-                        gap-lg-2 mt-3 mt-lg-0">
-
-                <a
-                    href="{{ route('dashboard') }}"
-                    class="nav-link taxflow-nav-link
-                        {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                    @if(request()->routeIs('dashboard'))
-                        aria-current="page"
-                    @endif>
-                    Dashboard
-                </a>
-
-                <!-- Merchant -->
-                <a
-                    href="{{ route('merchants.index') }}"
-                    class="nav-link taxflow-nav-link
-                    {{ request()->routeIs('merchants.*') ? 'active' : '' }}"
-                    @if(request()->routeIs('merchants.*'))
-                        aria-current="page"
-                    @endif>
-                    Merchant
-                </a>
-
-                <!-- Jenis Pajak -->
-                <a
-                    href="{{ route('tax-types.index') }}"
-                    class="nav-link taxflow-nav-link
-                    {{ request()->routeIs('tax-types.*') ? 'active' : '' }}"
-                    @if(request()->routeIs('tax-types.*'))
-                        aria-current="page"
-                    @endif>
-                    Jenis Pajak
-                </a>
-
-                <!-- Transaksi -->
-                <a
-                    href="{{ route('transactions.index') }}"
-                    class="nav-link taxflow-nav-link
-                    {{ request()->routeIs('transactions.*') ? 'active' : '' }}"
-                    @if(request()->routeIs('transactions.*'))
-                        aria-current="page"
-                    @endif>
-                    Transaksi
-                </a>
-
-                <div class="taxflow-nav-divider"></div>
-
-                <!-- Logout -->
                 <form method="POST"
-                      action="{{ route('logout') }}">
+                      action="{{ route('logout') }}"
+                      class="m-0">
                     @csrf
 
-                    <button
-                        type="submit"
-                        class="btn taxflow-logout">
+                    <button type="submit"
+                            class="btn taxflow-logout">
                         Logout
                     </button>
                 </form>
 
             </div>
-        </div>
+        @endauth
 
     </div>
 </nav>
+
+@auth
+    @include('partials.dashboard-sidebar')
+
+    <script
+        src="{{ asset('js/taxflow-preferences.js') }}"
+        defer>
+    </script>
+@endauth
